@@ -473,14 +473,14 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var appRoutes = [
     // { path: "", redirectTo: "", pathMatch: "full" },
     { path: "", component: _home_home_component__WEBPACK_IMPORTED_MODULE_4__["HomeComponent"], data: { animation: "home" } },
-    { path: "/about", component: _about_about_component__WEBPACK_IMPORTED_MODULE_3__["AboutComponent"], data: { animation: "about" } },
-    { path: "/contact", component: _page_page_component__WEBPACK_IMPORTED_MODULE_2__["PageComponent"], data: { animation: "contact" } },
+    { path: "about", component: _about_about_component__WEBPACK_IMPORTED_MODULE_3__["AboutComponent"], data: { animation: "about" } },
+    { path: "contact", component: _page_page_component__WEBPACK_IMPORTED_MODULE_2__["PageComponent"], data: { animation: "contact" } },
     {
-        path: "/portfolio",
+        path: "portfolio",
         component: _portfoilio_portfoilio_component__WEBPACK_IMPORTED_MODULE_8__["PortfoilioComponent"],
         data: { animation: "portfolio" }
     },
-    { path: "/resume", component: _resume_resume_component__WEBPACK_IMPORTED_MODULE_7__["ResumeComponent"], data: { animation: "resume" } },
+    { path: "resume", component: _resume_resume_component__WEBPACK_IMPORTED_MODULE_7__["ResumeComponent"], data: { animation: "resume" } },
     { path: "**", redirectTo: "", pathMatch: "full" }
 ];
 var AppRoutingModule = /** @class */ (function () {
