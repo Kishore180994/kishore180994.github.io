@@ -1,20 +1,488 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-  <title>Kishore Portfolio</title>
-  <base href="/">
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0d0e12">
+<title>Kishore Danduri | Full-stack AI developer</title>
+<meta name="description" content="Kishore Danduri: evaluates LLMs on real Android builds at Google, builds agents and MCP tools, prints his own parts. A portfolio that prints as you scroll.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+  :root { color-scheme:dark; --paper:#0d0e12; --card:#16171c; --ink:#ece7da; --muted:#9b968a; --blue:#7b9cff; --orange:#ff6a2f; --line:rgba(236,231,218,.14); --bd:rgba(236,231,218,.3); }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--paper); color:var(--ink); font-family:Inter, system-ui, sans-serif; overflow:hidden; }
+  body { background:radial-gradient(1100px 700px at 75% 30%, #1d1f27 0%, #0f1014 62%, #0a0b0e 100%); }
+  a { color:var(--blue); text-decoration:underline; text-underline-offset:3px; } a:hover { color:var(--orange); }
+  canvas#bg { position:fixed; inset:0; width:100%; height:100%; z-index:0; }
+  #stage { position:fixed; inset:0; perspective:1100px; perspective-origin:50% 45%; z-index:1; }
+  #world { position:absolute; left:0; top:0; width:100%; height:100%; transform-style:preserve-3d; pointer-events:none; }
+  .panel { position:absolute; left:50%; top:50%; width:min(800px, 88vw); max-height:84vh; overflow:hidden; background:var(--card); border:1px solid var(--bd); border-radius:6px; box-shadow:0 24px 60px rgba(0,0,0,.6); will-change:transform, opacity; }
+  .panel::after { content:""; position:absolute; left:0; right:0; bottom:0; height:9px; background:repeating-linear-gradient(0deg, var(--blue) 0 1px, transparent 1px 3px); opacity:.55; pointer-events:none; }
+  .panel.fg { box-shadow:0 30px 80px rgba(0,0,0,.72); }
+  .panel.behind { cursor:pointer; } .panel.behind .body { pointer-events:none; }
+  .bar { display:flex; align-items:center; gap:10px; padding:9px 16px; border-bottom:1px solid var(--bd); font:500 11.5px 'JetBrains Mono', monospace; color:var(--ink); background:#1d1e24; letter-spacing:.03em; }
+  .bar .n { background:var(--ink); color:var(--paper); padding:1px 7px; border-radius:3px; }
+  .bar .t { flex:1; } .bar .tag { color:var(--orange); font-weight:500; } .panel.behind .bar .tag { color:var(--muted); }
+  .body { padding:24px 30px 30px; max-height:calc(84vh - 42px); overflow-y:auto; overscroll-behavior:contain; }
+  .eyebrow { font:500 11.5px 'JetBrains Mono', monospace; color:var(--orange); letter-spacing:.1em; text-transform:uppercase; }
+  h1, h2 { font-family:Fraunces, Georgia, serif; font-weight:700; letter-spacing:-.02em; }
+  h2 { font-size:clamp(25px, 3.4vw, 34px); line-height:1.1; margin:8px 0 12px; }
+  h3 { font:600 15px Inter, sans-serif; margin:0 0 4px; }
+  p { color:#cfc9ba; line-height:1.62; margin:0 0 13px; font-size:15.5px; } p.lede { font-size:19px; color:var(--ink); line-height:1.5; }
+  .muted { color:var(--muted); font-size:13px; }
+  svg.name { width:100%; height:auto; display:block; margin:10px 0 6px; overflow:visible; }
+  svg.name text { font:700 112px Fraunces, Georgia, serif; fill:transparent; stroke:var(--ink); stroke-width:1.3; stroke-dasharray:1400; stroke-dashoffset:1400; animation:draw 3.4s ease-out .2s forwards, fillin .9s ease 3s forwards; }
+  @keyframes draw { to { stroke-dashoffset:0; } } @keyframes fillin { to { fill:var(--ink); stroke:transparent; } }
+  .tags { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 14px; } .tags span { font:400 11.5px 'JetBrains Mono', monospace; padding:2px 9px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:#1c1d23; }
+  .btns a, .btns button { display:inline-block; margin:4px 8px 0 0; padding:9px 15px; border:1px solid var(--bd); border-radius:5px; background:transparent; color:var(--ink); font:500 14px Inter, sans-serif; text-decoration:none; cursor:pointer; }
+  .btns .main { background:var(--ink); color:var(--paper); } .btns a:hover, .btns button:hover { background:var(--orange); border-color:var(--orange); color:#fff; }
+  .row { display:grid; grid-template-columns:150px 1fr; gap:4px 20px; padding:12px 0; border-top:1px solid var(--line); } .row:first-of-type { border-top:0; }
+  .row .w { font:400 12px 'JetBrains Mono', monospace; color:var(--muted); } .row p { margin:3px 0 0; font-size:14.5px; }
+  pre.term { margin:6px 0 12px; padding:14px 16px; border-radius:5px; background:#090a0d; color:#cfd6e4; font:400 12.5px/1.65 'JetBrains Mono', monospace; overflow:auto; white-space:pre; }
+  pre.term .g { color:#ff8a5c; } pre.term .d { color:#7b8497; }
+  figure { margin:8px 0 14px; } figure img { width:100%; display:block; border:1px solid var(--bd); border-radius:4px; cursor:zoom-in; } figcaption { font-size:12.5px; color:var(--muted); margin-top:6px; line-height:1.5; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:14px; } .two figure { margin:0; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .card { border:1px solid var(--bd); border-radius:5px; padding:12px 14px; background:#1c1d23; } .card p { margin:4px 0 0; font-size:13.5px; line-height:1.5; } .card .k { font:500 10.5px 'JetBrains Mono', monospace; color:var(--orange); letter-spacing:.08em; text-transform:uppercase; }
+  .stats { display:flex; flex-wrap:wrap; gap:22px; margin:6px 0 14px; } .stats div b { display:block; font:700 26px Fraunces, serif; letter-spacing:-.02em; } .stats div span { font-size:12.5px; color:var(--muted); }
+  /* part viewer */
+  .sk .lg { display:grid; grid-template-columns:150px 1fr; gap:4px 16px; padding:11px 0; border-top:1px solid var(--bd); } .sk .lg:first-of-type { margin-top:6px; }
+  .sk .ln { font:700 15px 'JetBrains Mono', monospace; color:var(--orange); letter-spacing:.01em; }
+  .sk .lt { line-height:1.6; }
+  .hl { background:rgba(255,90,31,.15); color:#ffe2d4; font-weight:600; padding:1px 5px; border-radius:3px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+  html.flat .sk .lg, .sk .lg.narrow { grid-template-columns:1fr; }
+  .tabs { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 10px; } .tabs button { font:500 12px 'JetBrains Mono', monospace; padding:5px 10px; border:1px solid var(--bd); border-radius:4px; background:transparent; color:var(--ink); cursor:pointer; } .tabs button.on { background:var(--ink); color:var(--paper); }
+  #vwrap { position:relative; border:1px solid var(--bd); border-radius:5px; background:linear-gradient(#1b1c22,#101115); height:400px; overflow:hidden; } #vcanvas { width:100%; height:100%; display:block; cursor:grab; }
+  #vinfo { font:500 12px 'JetBrains Mono', monospace; color:var(--ink); margin:8px 0 2px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  input[type=range] { width:100%; accent-color:var(--orange); }
+  /* lab */
+  .bars { display:grid; gap:10px; margin:10px 0; } .bar2 { display:grid; grid-template-columns:150px 1fr 56px; gap:10px; align-items:center; font-size:13px; } .bar2 .tr { height:18px; background:#2a2b32; border:1px solid var(--bd); border-radius:3px; overflow:hidden; } .bar2 .fl { height:100%; background:var(--blue); width:0; transition:width .25s; } .bar2.h .fl { background:var(--orange); } .bar2 b { font:500 12.5px 'JetBrains Mono', monospace; text-align:right; }
+  .lat { display:grid; gap:7px; margin:8px 0 12px; } .lat .l { display:grid; grid-template-columns:230px 1fr 78px; gap:10px; align-items:center; font-size:12.5px; } .lat .tr { height:14px; background:#2a2b32; border-radius:2px; } .lat .fl { height:100%; background:var(--blue); border-radius:2px; } .lat .fl.o { background:var(--orange); } .lat b { font:500 12px 'JetBrains Mono', monospace; text-align:right; }
+  .tl { border-left:2px solid var(--bd); margin:6px 0 14px 6px; padding-left:16px; } .tl div { position:relative; padding:0 0 11px; font-size:14px; line-height:1.5; color:#cfc9ba; } .tl div::before { content:""; position:absolute; left:-23px; top:6px; width:8px; height:8px; background:var(--orange); border-radius:50%; } .tl b { font:500 12px 'JetBrains Mono', monospace; color:var(--ink); margin-right:8px; }
+  /* HUD */
+  #hud { position:fixed; left:20px; top:50%; transform:translateY(-50%); z-index:5; font:400 12px/1.85 'JetBrains Mono', monospace; color:var(--muted); }
+  #hud .h { color:var(--ink); margin-bottom:6px; font-weight:500; } #hud button { all:unset; display:block; cursor:pointer; white-space:pre; } #hud button:hover { color:var(--ink); } #hud button.on { color:var(--orange); font-weight:500; }
+  #xr { position:fixed; right:20px; top:18px; z-index:5; font:500 12px 'JetBrains Mono', monospace; color:var(--ink); background:var(--card); border:1px solid var(--bd); border-radius:5px; padding:7px 12px; cursor:pointer; } #xr.on { background:var(--orange); border-color:var(--orange); color:#fff; }
+  html.xray .panel { background:rgba(22,23,28,.38); } html.xray .panel .bar { background:rgba(29,30,36,.5); }
+  #cmdwrap { display:none !important; }
+  #cmdwrap { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); width:min(580px, 88vw); z-index:6; }
+  #out { white-space:pre; font:400 12px/1.6 'JetBrains Mono', monospace; color:var(--ink); margin:0 0 8px; background:rgba(22,23,28,.94); padding:0; border-radius:4px; } #out:not(:empty) { padding:8px 12px; border:1px solid var(--bd); }
+  #cmd { display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--bd); border-radius:6px; padding:8px 12px; font:400 13px 'JetBrains Mono', monospace; } #cmd span { color:var(--orange); } #cmd input { flex:1; background:none; border:0; outline:0; color:var(--ink); font:inherit; }
+  #ring { position:fixed; left:0; top:0; width:30px; height:30px; margin:-15px 0 0 -15px; border:1.5px solid var(--orange); border-radius:50%; pointer-events:none; z-index:60; transition:width .15s,height .15s,margin .15s,opacity .2s; opacity:0; } #ring.big { width:48px; height:48px; margin:-24px 0 0 -24px; }
+  #lb { position:fixed; inset:0; z-index:80; background:rgba(21,23,28,.86); display:none; align-items:center; justify-content:center; cursor:zoom-out; } #lb.open { display:flex; } #lb img { max-width:94vw; max-height:92vh; border:1px solid #fff; }
+  /* chat */
+  #chatbtn { position:fixed; right:20px; bottom:20px; z-index:30; background:var(--orange); color:#fff; border:0; border-radius:999px; padding:12px 18px; font:600 14px Inter, sans-serif; cursor:pointer; box-shadow:0 8px 24px rgba(255,90,31,.35); }
+  #chat { position:fixed; right:20px; bottom:76px; z-index:31; width:min(380px, calc(100vw - 28px)); height:min(560px, calc(100vh - 110px)); display:none; flex-direction:column; background:var(--card); border:1px solid var(--bd); border-radius:8px; box-shadow:0 30px 70px rgba(0,0,0,.72); overflow:hidden; } #chat.open { display:flex; }
+  #chat .ch { display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid var(--bd); font:500 11.5px 'JetBrains Mono', monospace; background:#1d1e24; } #chat .ch b { flex:1; } #chat .ch button { all:unset; cursor:pointer; padding:0 4px; }
+  #msgs { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
+  .m { max-width:88%; padding:9px 12px; border-radius:10px; font-size:14px; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; } .m.u { align-self:flex-end; background:var(--ink); color:var(--paper); } .m.b { align-self:flex-start; background:#22232a; border:1px solid var(--line); color:#e4dfd2; }
+  #chips { display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 10px; max-height:130px; overflow-y:auto; } #chips button { all:unset; cursor:pointer; font:400 12.5px Inter, sans-serif; color:var(--blue); border:1px solid var(--line); background:#1c1d23; border-radius:999px; padding:5px 10px; } #chips button:hover { border-color:var(--orange); color:var(--orange); }
+  #cf { display:flex; gap:8px; padding:10px 12px; border-top:1px solid var(--line); } #ci { flex:1; background:#101115; border:1px solid var(--bd); border-radius:5px; padding:9px 11px; font:14px Inter, sans-serif; outline:0; color:var(--ink); } #cs { background:var(--ink); color:var(--paper); border:0; border-radius:5px; padding:0 14px; font:600 13px Inter, sans-serif; cursor:pointer; } #cs:disabled { opacity:.5; }
+  #chat .note { padding:0 14px 10px; font:400 11px 'JetBrains Mono', monospace; color:var(--muted); }
+  /* flat fallback */
+  html.flat, html.flat body { overflow:auto; height:auto; } html.flat #stage { position:static; perspective:none; } html.flat #world { position:static; width:auto; height:auto; transform:none !important; padding:16px 14px 90px; }
+  html.flat .panel { position:relative; left:0; top:0; width:auto; max-height:none; margin:0 0 16px; transform:none !important; opacity:1 !important; filter:none !important; } html.flat .panel .body { max-height:none; overflow:visible; } html.flat .panel.behind .body { pointer-events:auto; }
+  html.flat #hud, html.flat #cmdwrap, html.flat #xr, html.flat #ring, html.flat canvas#bg { display:none; } html.flat .row, html.flat .two, html.flat .grid2 { grid-template-columns:1fr; } html.flat .bar2, html.flat .lat .l { grid-template-columns:1fr; }
+  @media (max-width:820px) { #cmdwrap { display:none; } }
+</style>
 </head>
-
 <body>
+<canvas id="bg"></canvas>
+<div id="stage"><div id="world">
 
-  <app-root>
-  </app-root>
-<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="scripts.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+<section class="panel" data-name="hero"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Full-stack AI developer &middot; Bay Area</div>
+  <svg class="name" viewBox="0 0 900 140" role="img" aria-label="Kishore Danduri"><text x="2" y="108">Kishore Danduri</text></svg>
+  <p class="lede">Full-stack AI developer. At Google I built the agent that turns a one-line bug report into a reproduced, filed bug, and now I test whether AI can fix real Android builds. After hours I build agents, print my own parts and teach myself robotics.</p>
+  <p>As you scroll, a 3D part in the background builds up layer by layer, the way a 3D printer makes it. It is a Beyblade arena piece I designed. Everything marked &ldquo;real&rdquo; on this page comes from my own computer.</p>
+  <div class="btns"><button class="main" data-go="proof">Show me what's real</button><a href="https://github.com/Kishore180994">GitHub</a><a href="https://www.linkedin.com/in/ck18/">LinkedIn</a></div>
+  <p class="muted" style="margin-top:16px">Scroll or press the arrow keys &middot; press <b>X</b> to make the cards see-through &middot; the button at bottom right is a chatbot that only knows about me</p>
+</div></section>
 
+<section class="panel" data-name="work"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Day job</div><h2>Eight years inside Google engineering</h2>
+  <div class="row"><div class="w">Dec 2024 &ndash; now</div><div><h3>LLM evaluations, Android Bench</h3><p>Contractor via S2SSOFT / HCL. I check whether LLM-written build fixes actually compile and behave on third-party Android projects. I worked on <span class="hl">the framework that evaluates the benchmark</span>, implemented the <span class="hl">LLM-as-a-judge feature</span>, and <span class="hl">improved the evaluation workflow</span> end to end. I also review benchmark tasks for fairness, track regressions between model versions, and <span class="hl">co-designed the system architecture of a tool that finds security vulnerabilities in Android packages</span>.</p></div></div>
+  <div class="row"><div class="w">Jun 2018 &ndash; Nov 2024</div><div><h3>ARC++, the team that runs Android apps on ChromeOS</h3><p><span class="hl">AI-assisted bug filing.</span> A tester just describes the bug they hit. <span class="hl">Gemini reproduces it, captures the stack trace and files the bug</span> in the tracker. It cut the time spent per bug by <span class="hl">75%</span> (measured), let the testing team file bugs much faster, and <span class="hl">automated the triage step</span>, so the triage team works more efficiently too.</p><p>I also led the team&rsquo;s internal tools: performance dashboards and cloud-gaming diagnostics extensions that Intel and partner teams adopted.</p></div></div>
+  <div class="row"><div class="w">2017 &ndash; 2018</div><div><h3>M.S. Computer Science, University of Dayton</h3><p>GPA 3.86. As a graduate assistant under Prof. Mehdi Zargham I worked on a 3D and virtual-reality coding environment for kids, built with Unity and C# and a custom compiler. Kids wrote code that built a world and then rode it in VR, at summer workshops and VR-lab tours in 2018.</p></div></div>
+</div></section>
+
+<section class="panel" data-name="skills"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body sk">
+  <div class="eyebrow">Real &middot; what I actually write</div><h2>The languages I write, and what I built in each</h2>
+  <p>I use <span class="hl">Claude Code every day</span>, and I <span class="hl">read and test what it writes</span>. These are the languages I can write and debug myself, each with things I built in it.</p>
+  <div class="lg"><div class="ln">Python</div><div class="lt">Backends and tooling at Google (<span class="hl">FastAPI</span>, <span class="hl">Flask</span>), <span class="hl">layershot</span> (a Python package published on PyPI, with tests), the <span class="hl">HoloBench</span> benchmark, a local voice stack with <span class="hl">GPU speech-to-text</span>, and a <span class="hl">LightGBM</span> model I backtested honestly.</div></div>
+  <div class="lg"><div class="ln">TypeScript &amp; JavaScript</div><div class="lt"><span class="hl">React</span> and <span class="hl">Angular</span> dashboards, <span class="hl">Chrome extensions adopted by Intel</span> and partner teams, <span class="hl">HoloView</span> in Electron and React, <span class="hl">Node APIs</span> with Express, Hono and tRPC, GraphQL, and this site.</div></div>
+  <div class="lg"><div class="ln">C#</div><div class="lt">At the University of Dayton, a <span class="hl">3D and VR coding tool in Unity</span>, with a <span class="hl">compiler I wrote</span> for it.</div></div>
+  <div class="lg"><div class="ln">Android &amp; Gradle</div><div class="lt"><span class="hl">Eight years</span> on Google&rsquo;s Android and ChromeOS teams: <span class="hl">Android on ChromeOS</span>, Android build systems, performance profiling, and now how well models fix real Android builds.</div></div>
+  <div class="lg"><div class="ln">CAD as code</div><div class="lt">Parts and whole assemblies written as code (<span class="hl">OpenSCAD</span>, <span class="hl">manifold3d</span>, <span class="hl">CadQuery</span>), such as the Catan board and my Jarvis screen base.</div></div>
+  <div class="lg"><div class="ln">Data</div><div class="lt"><span class="hl">PostgreSQL</span>, <span class="hl">SQLite</span>, <span class="hl">Firestore</span>, and <span class="hl">vector search</span> over logs and reports.</div></div>
+  <h3 style="margin:16px 0 4px">How I know it works</h3>
+  <p><span class="hl">layershot is covered by tests.</span> The chatbot on this site has <span class="hl">89 tests, including attacks</span>. HoloBench keeps a <span class="hl">hidden test set</span> so nobody, including me, can tune to it. When a result looks too good I <span class="hl">rebuild it cleanly</span>.</p>
+  <div class="tags"><span>Python</span><span>TypeScript</span><span>JavaScript</span><span>C#</span><span>Node.js</span><span>SQL</span><span>OpenSCAD</span><span>Gradle</span></div>
+</div></section>
+<section class="panel" data-name="proof"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Real &middot; open source &middot; PyPI</div><h2>layershot in action</h2>
+  <p>layershot is a tool I wrote. It lets an AI program see and click Windows apps that are hidden behind the window you are using, without taking over your screen or mouse. Below is its real output from my own PC on Nov 5, 2026 (FG = in front, MIN = minimized). Window titles are shortened.</p>
+<pre class="term"><span class="d">&gt;</span> <span class="g">layershot list</span>
+  0 FG   chrome.exe            this page
+  1      WindowsTerminal.exe   my terminal
+  <span class="d">...</span>
+  4 MIN  electron.exe          HoloView
+  5 MIN  bambu-studio.exe      Bambu Studio
+  <span class="d">...</span>
+  9 MIN  Obsidian.exe          Graph view
+<span class="d">&gt;</span> <span class="g">layershot shot 4 -o holoview.png</span>
+saved holoview.png  1920x1032  layer 4</pre>
+  <figure><img class="zoom" src="assets/holoview.jpg" alt="HoloView, captured while minimized"><figcaption>That image is the result. HoloView was minimized behind my browser when layershot captured it. I blacked out the printer's network address and a folder path.</figcaption></figure>
+  <div class="tags"><span>Python</span><span>MCP server</span><span>CLI + SDK</span><span>UI Automation</span><span>MIT</span></div>
+  <div class="btns"><a class="main" href="https://github.com/Kishore180994/layershot">Source</a><a href="https://pypi.org/project/layershot/">pip install layershot</a></div>
+</div></section>
+
+<section class="panel" data-name="scars"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Real &middot; from my own notes and my work</div><h2>Things that broke, and what I learned</h2>
+  <p>Four lessons keep coming back, in my work at Google and in my own projects:</p>
+  <p><span class="hl">1. Test the real result, not just an earlier step.</span> A step in the middle can look fine while the final output is broken. So I open the final file, click the real button, or read the final score.<br>
+  <span class="hl">2. Measure before you believe.</span> Do not trust a code comment, a claimed speed-up or a good-looking number until you have timed or tested it yourself.<br>
+  <span class="hl">3. Watch for failures that look like success.</span> A program can run without any error and still do the wrong thing, like running on the slow chip, or an AI agent that never received its tools.<br>
+  <span class="hl">4. Decide what counts as a pass before you start.</span> Keep some tests hidden, and if a result looks too good, rebuild it from scratch and check again.</p>
+  <div class="grid2">
+        <div class="card"><div class="k">Memory</div><h3>15 GB gone every night</h3><p>My voice assistant, Jarvis, slowly used up about 15 GB of memory. Until I find the leak, a Windows task restarts it at 4:30 AM every day.</p></div>
+    <div class="card"><div class="k">Assumptions</div><h3>A wrong comment in my own code</h3><p>A comment in my code said the speech-to-text model and the text-to-speech model could not run together on the GPU. I tested it: they ran fine once I installed one missing file. Speech-to-text went from 1,077 ms on the CPU to 79 ms.</p></div>
+    <div class="card"><div class="k">Measurement</div><h3>The turbo that was never on</h3><p>I thought a &ldquo;turbo&rdquo; add-on was making my video generation faster. When I measured, it turned out it was never connected. The real speed was 15.7 seconds per step.</p></div>
+        <div class="card"><div class="k">Silent failure</div><h3>A language model running slowly, with no error</h3><p>On Windows, one missing file made llama.cpp (the program I use to run language models locally) quietly use the CPU instead of the graphics card. Everything worked, just far too slowly, and nothing warned me.</p></div>
+    <div class="card"><div class="k">Downloads</div><h3>100x faster, one flag</h3><p>Hugging Face limits the speed of each download connection. Downloading with 16 connections at once (using a tool called aria2) was about 100 times faster than one connection.</p></div>
+    <div class="card"><div class="k">Config</div><h3>A command that deleted my API keys</h3><p>Running one command (<code>vercel link</code>) wiped my <code>.env.local</code> file, which held my API keys. Some were gone for good. Now I back up those files before I touch a project.</p></div>
+        <div class="card"><div class="k">Silent failure</div><h3>The agent that never got its tools</h3><p>When I tested the GLM model through its own command-line tool on HoloBench, it answered without ever using the benchmark&rsquo;s tools, because my setup used the wrong config format. Running it by hand showed the problem. After the fix it scored in the high 90s on the easy tasks. Runs where the test setup itself failed are left out, not scored as zero.</p></div>
+            <div class="card"><div class="k">Hardware</div><h3>Devices that died while idle</h3><p>Windows power-saving settings (PCIe ASPM and USB suspend) kept switching off devices that were idle. I turned both off. A broken built-in network adapter also froze all networking on the machine, so I keep it disabled.</p></div>
+    <div class="card"><div class="k">Resources</div><h3>The out-of-memory crash</h3><p>My PC ran out of memory, and that broke WSL (Linux running inside Windows). I added a memory guard and capped WSL at 10 GB, so one program cannot take the whole machine down.</p></div>
+        <div class="card"><div class="k">Google &middot; bug filing</div><h3>Reproduce before you file</h3><p>The bug-filing tool is not about nicer bug text. The agent has to reproduce the bug and capture the stack trace first, and only then file it. That is why it cut the time per bug by 75% and made triage easier.</p></div>
+    <div class="card"><div class="k">Google &middot; evaluation</div><h3>Decide what a pass is first</h3><p>On Android Bench, the hard part is deciding what counts as a pass, and whether a task is fair, before any model runs. I carried that into my own work: HoloBench keeps a hidden test set, and a result that looks too good gets rebuilt.</p></div>
+  </div>
+</div></section>
+
+<section class="panel" data-name="holobench"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Real &middot; evaluation &middot; not public yet</div><h2>HoloBench: can a model design a printable part?</h2>
+  <p>HoloBench is a test I built to check whether AI models can design 3D parts that are correct and printable. It has 19 tasks in four levels, from a simple plate up to meshing gears and a threaded rod. Each task has a correct reference answer, and some tasks are kept hidden so a model cannot be tuned to them. Every model gets the same instructions, the same three tools, 15 tool calls and 10 minutes. Scores are out of 100: 55 for correct dimensions, 25 for correct shape, 10 for printability and 10 for efficiency. A plain box scores about 33. The reference answer scores about 98.</p>
+  <div class="lat" id="hb1"></div><div class="lat" id="hb2"></div>
+  <p>The weakest model, Haiku, fused two gears into one solid and faked a thread by stacking rings. My checks caught both.</p>
+  <figure><img class="zoom" src="assets/holobench.png" alt="HoloBench results table inside HoloView: seven models by eleven public tasks"><figcaption>The real results screen in my HoloView app. Each row is a model, each column is a task, and green means a high score. The starred rows (Kimi, GLM, Grok) were run through their own command-line tools without pictures, so they are not exactly the same test as the Claude rows. The red 0 is GLM on the spur gear: its run stopped after three tool calls without submitting anything, so it scored zero.</figcaption></figure>
+  <p class="muted">The Claude models were tested on Oct 5, 2026. Kimi, GLM and Grok were tested on Nov 5 through their own command-line tools, on the 11 public tasks only. Almost every model scores close to perfect on the easy levels (1 and 2), so the difference shows up on levels 3 and 4. On level 4, Claude Opus scored 95, Kimi 78 and Grok 47. GPT could not be tested because its tool hit a usage limit, and GLM and Grok have some level 4 results missing. Next I want to try open-ended design briefs. The code is private.</p>
+  <div class="tags"><span>Python</span><span>CadQuery</span><span>manifold3d</span><span>OpenSCAD</span><span>MCP</span></div>
+</div></section>
+<section class="panel" data-name="systemone"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Real &middot; how I build the &ldquo;decide&rdquo; step</div><h2>System One: small, fast models that make decisions</h2>
+  <p>Most AI apps ask a big language model to write free text and then try to read an answer out of it. <span class="hl">System One</span> (from TypeSafe, which I use through their Jev service) works differently. It is a small, fast model built only to <span class="hl">decide</span>. I give it a question and a fixed list of options, and it returns <span class="hl">one choice or a score</span>, never free text.</p>
+  <h3 style="margin:14px 0 4px">Why I like it</h3>
+  <p>An answer that is one of a few fixed options can be <span class="hl">checked, logged and tested</span>. A paragraph of text cannot. When a decision is wrong I can see which option it picked, change the question or the options, and test again.</p>
+  <h3 style="margin:14px 0 4px">Where I use it</h3>
+  <p><span class="hl">My assistant Jarvis.</span> The decision step picks which tool to run and whether an action is risky enough to ask me first. I started with a decision model running on my own GPU (CLM-8B), then moved to the hosted Jev on Oct 6, 2026. While it runs I log every step, so I can later train a small local model for the same job.</p>
+  <p><span class="hl">Coding agents.</span> I adapted TypeSafe&rsquo;s open-source (MIT) skill for Claude Code and Codex, so coding agents turn a vague &ldquo;ask the model&rdquo; step into a typed decision: a choice, a yes/no, or a score.</p>
+  <p><span class="hl">Safe upgrades.</span> I pin one model version for real decisions and run the newer version in &ldquo;shadow&rdquo; mode, where it only logs what it would have decided. I switch only after comparing the two on data neither has been tuned to.</p>
+  <div class="tags"><span>Typed decisions</span><span>Routing</span><span>Risk checks</span><span>Local and hosted models</span><span>Shadow testing</span></div>
+</div></section><section class="panel" data-name="voice"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Real &middot; measured Oct 4, 2026</div><h2>How fast can an assistant listen and talk?</h2>
+  <p>I tested speech-to-text (turning speech into words) and text-to-speech (turning words into speech) on my own PC, using 80 noisy test clips, to choose what my assistant Jarvis would use. Shorter bars are faster.</p>
+  <div class="lat" id="lat1"></div><div class="lat" id="lat2"></div>
+  <p class="muted">STT = speech-to-text. WER = word error rate. The GPU version of Whisper needed one extra file (a DLL) to run. Giving Whisper a starting prompt made it make more mistakes, so I removed it.</p>
+  <div id="voicebox" style="display:none"><div class="eyebrow">Hear it from me</div><audio id="voiceclip" controls preload="none" src="assets/voice.mp3" style="width:100%;margin-top:6px"></audio></div>
+</div></section>
+
+<section class="panel" data-name="hobbies"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Hobby &middot; outside work</div><h2>3D printing is my hobby</h2>
+  <p>I print on a Bambu Lab P1S at home: parts I design myself, mostly to fix or fit something in my own house. I aim for 0.15 to 0.25 mm of clearance and care more about a part that fits than a fast print. Below are three of the biggest things I have designed with Claude. Pick one, drag it to look around, and slide to cut through it. They are my real model files, reduced in detail so the page loads.</p>
+  <div class="tabs" id="vtabs"></div>
+  <div id="vwrap"><canvas id="vcanvas"></canvas></div>
+  <div id="vinfo"><span id="vlayer"></span><span id="vsize"></span></div>
+  <input id="vrange" type="range" min="0" max="1000" value="1000" aria-label="Print progress">
+  <p id="vstory" style="margin-top:10px"></p>
+  <p class="muted">Drag to rotate. The slider cuts through the assembled model.</p>
+  <figure style="max-width:420px"><img class="zoom" src="assets/printer_cam.jpg" alt="P1S chamber camera frame mid-print"><figcaption>A frame from the printer's chamber camera mid-print. The toothed part is the spray dial of a garden-hose sprayer I am designing.</figcaption></figure>
+  <p>I also wrote my own desktop app for the hobby, HoloView, because I was tired of switching between viewers and the slicer. It browses my 3,800+ model files, measures parts (distance, wall thickness, hole diameter, overhangs, section cuts) and sends a plate to Bambu Studio. It is a tool for my own use, not something I sell.</p>
+  <div class="tags"><span>Bambu Lab P1S</span><span>PLA and PETG</span><span>Fit and clearance</span><span>HoloView (my own viewer)</span></div>
+</div></section>
+
+<section class="panel" data-name="holoview"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Real &middot; my workshop app</div><h2>HoloView: view, measure, design and print, with agents inside</h2>
+  <p>HoloView is the desktop app I built for my 3D printing hobby. It is made with Electron, React and TypeScript on top of a small Python server, and three.js draws the 3D view. Everything runs on my own PC.</p>
+  <div class="stats"><div><b>3,832</b><span>model files indexed</span></div><div><b>11</b><span>measurement tools</span></div><div><b>5</b><span>agents with their own tools</span></div></div>
+  <figure style="max-width:100%"><video controls muted loop playsinline preload="metadata" poster="" style="width:100%;border:1px solid var(--bd);border-radius:5px;background:#0b0d12" src="assets/holoview_demo.mp4"></video><figcaption>A real recording of HoloView, not a mockup: a Beyblade (Dranzer Spiral, 11 parts). It pulls the parts apart, snaps them back together, then runs the fit check, which finds 23 contact points between parts, and pulls them apart again. I clicked the buttons through the app&rsquo;s own window while capturing it.</figcaption></figure>
+  <h3 style="margin:14px 0 4px">What it does</h3>
+  <p><b>Look and measure.</b> Opens Bambu projects, STL and OBJ files, including 400 MB ones. Measurement tools: point probe, distance, path length, angle, hole diameter, wall thickness, bounding box, section cut with cross-section area, and an overhang map that colours steep faces and gives a support verdict. It warns when a part exceeds the P1S&rsquo;s 256 mm bed.</p>
+  <p><b>Assemble and animate.</b> Puts parts together with joints, checks clashes live, plays an animation (a drawer sliding out, a lid opening) and records it as a video.</p>
+  <p><b>Print.</b> Sends a plate to Bambu Studio, shows live printer progress, and writes Bambu Studio presets from a fabrication manual I compiled from the vendor&rsquo;s wiki and forum, with every claim tagged official, consensus or anecdote.</p>
+  <h3 style="margin:14px 0 4px">How the agents work together</h3>
+  <p>Each agent is a Claude Code process with its own skills and a short list of tools, and a small daemon runs them. They do not share one big prompt.</p>
+  <p><b>Forge</b> designs a new part in code (manifold3d, OpenSCAD, FreeCAD or Blender, headless). Every run is measured and rendered, so it sees its own mistakes and fixes them. <b>Spark</b> assembles and alters models inside HoloView: it places parts, moves them as groups, adds joints, and re-checks. A separate read-only <b>verifier</b> looks at the result before Spark can say it is done. <b>Scout</b> researches references. <b>Fab</b> can start or stop a print, and it asks me first. For the modelling step I can pick the model in a dropdown: Claude, Kimi, GLM or Grok, each through its own CLI, all driving the same CAD tools.</p>
+  <p>One rule I added after a failure: a part is not finished until a print-ready check passes. Spark once saved meshes as loose triangles that Bambu Studio flagged as open edges. Now the mesh is welded exactly and checked for openings and floating geometry before any sign-off.</p>
+  <h3 style="margin:14px 0 4px">Controlled by my local Jarvis</h3>
+  <p>Jarvis is the voice assistant I run locally. I say &ldquo;add a handle to the drawer&rdquo; or &ldquo;print plate two&rdquo;. Jarvis passes the request to Hermes, an agent runtime on my PC, which starts the right agent through an MCP server (a standard way for AI programs to use tools). The agent works inside HoloView, and I watch it happen on screen. Anything irreversible, like starting a print or deleting a file, pops a confirm dialog in Jarvis first.</p>
+  <figure><img class="zoom" src="assets/holoview.jpg" alt="HoloView window"><figcaption>HoloView with the Beyblade open: its parts listed beside the model, measurements and clash warnings on the right, the printer panel below. I covered my folder names and the printer&rsquo;s ID.</figcaption></figure>
+  
+  <div class="tags"><span>Electron</span><span>React</span><span>TypeScript</span><span>Three.js</span><span>Claude Code agents</span><span>MCP</span><span>Hermes</span><span>Bambu Studio</span></div>
+</div></section>
+
+<section class="panel" data-name="robot"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Just starting</div><h2>A robot dog, on a budget</h2>
+  <p>The next project is hardware that moves. I'm building the OpenCat robot dog: twelve small motors (servos) controlled by a basic ESP32 chip, with a body I will 3D print.</p>
+  <div class="stats"><div><b>12</b><span>servos</span></div><div><b>ESP32</b><span>controller</span></div><div><b>next</b><span>design the frame</span></div></div>
+  <p>The software settings are done. The body frame comes next, then the first wobbly steps. I'll post the first one here.</p>
+  <div class="tags"><span>OpenCat</span><span>ESP32</span><span>Arduino core 2.0.17</span><span>huge_app partition</span><span>3D printed frame</span></div>
+</div></section>
+
+<section class="panel" data-name="life"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">How I got here</div><h2>Something new almost every year</h2>
+  <div class="tl">
+    <div><b>2017&ndash;18</b>Graduate assistant at the University of Dayton: a 3D and VR coding environment for kids, with a custom compiler (Unity, C#).</div>
+    <div><b>2018</b>My first Angular portfolio.</div>
+    <div><b>2019</b>A baseball-stats hackathon app, an online code compiler, a drone you flew from a browser with a Cardboard VR view.</div>
+    <div><b>2020</b>Progressive web app experiments.</div>
+    <div><b>2022</b>React Native apps, Moovy (comments over streaming shows) and an FPS counter.</div>
+    <div><b>2023</b>Chrome extension tooling, CloudGamingFPS, an on-screen key and trackpad display.</div>
+    <div><b>2024</b>First generative AI projects: BugLens, GenDex and an AI game builder.</div>
+    <div><b>2025</b>AgentChrome, a LangGraph browser agent, plus a diarization server.</div>
+    <div><b>2026</b>layershot, Jarvis, HoloView, and models running on my own GPU.</div>
+  </div>
+  <h3>A normal day</h3>
+  <p>I plan my days in an app I wrote called Level Up. It works like a game, with XP, ranks from Ronin to Shogun, and streaks. I code in the morning, practice system design after lunch, and go to the gym in the evening. My game time stays locked until the day's practice problems are done. I built it that way on purpose to keep myself honest.</p>
+</div></section>
+
+
+
+<section class="panel" data-name="contact"><div class="bar"><span class="n"></span><span class="t"></span><span class="tag"></span></div><div class="body">
+  <div class="eyebrow">Last layer</div><h2>Let's talk</h2>
+  <p class="lede">I'm looking for senior AI engineering work: agents, LLM evaluation, applied AI. Remote is welcome.</p>
+  <p class="muted">Python, TypeScript, React, Node.js, FastAPI, LangGraph, MCP, RAG, PyTorch, Docker, AWS, Firebase.</p>
+  <div class="btns"><a class="main" href="mailto:kishore.vds60@gmail.com">kishore.vds60@gmail.com</a><a href="https://www.linkedin.com/in/ck18/">LinkedIn</a><a href="https://github.com/Kishore180994">GitHub</a></div>
+</div></section>
+
+</div></div>
+
+<aside id="hud"></aside>
+<button id="xr" type="button">X-ray: off</button>
+<div id="cmdwrap"><pre id="out"></pre><div id="cmd"><span>&gt;</span><input id="in" placeholder="type  help  (press / to focus)" autocomplete="off" spellcheck="false"></div></div>
+<button id="chatbtn" type="button" aria-controls="chat" aria-expanded="false">Ask about Kishore</button>
+<div id="chat" role="dialog" aria-label="Ask about Kishore">
+  <div class="ch"><b>ask.exe</b><span>answers only about Kishore</span><button id="cx" type="button" aria-label="Close chat">&#10005;</button></div>
+  <div id="msgs" aria-live="polite"></div><div id="chips"></div>
+  <form id="cf" autocomplete="off"><input id="ci" maxlength="280" placeholder="Ask about his work, projects or life" aria-label="Your question"><button id="cs" type="submit">Send</button></form>
+  <div class="note">Powered by Claude. Off-topic questions are declined.</div>
+</div>
+<div id="lb"><img alt=""></div>
+<div id="ring"></div>
+
+<script>
+window.PARTS = [
+  {key:'catan_fortress', name:'Catan Drawer Fortress', asm:true, story:'A Catan board I designed so the whole game lives inside it: a chest with six drawers for pieces, cards and tokens, and the board on the lid. 269 parts, about 775 x 805 mm. I built it as code with Claude and assembled it in my own viewer, which checks that nothing collides. Colours show the groups: land tiles, sea rings, chest, drawers and the pieces of each player.'},
+  {key:'arena_assembly', name:'Beyblade arena', asm:true, story:'The arena for my Beyblade launcher: 15 parts, 458 mm across, built with Claude Code scripts and a fit-check script, then assembled in my viewer. The four big tiles are about 15 hours and 500 g of PETG each.'},
+  {key:'jarvis_base', name:'Jarvis screen base', asm:true, story:'The base under my Jarvis depth screen, version 12: 626 x 420 x 436 mm. It is written in OpenSCAD with Claude and split into printable decks, rails, handles and shims so every piece fits on the P1S.'}
+];
+window.__stack = { cur:0, idx:0, N:13 };
+(function(){
+  var panels=[].slice.call(document.querySelectorAll('.panel')), N=panels.length, names=panels.map(function(p){return p.dataset.name;});
+  window.__stack.N=N;
+  var world=document.getElementById('world'), root=document.documentElement;
+  var GAP=560, target=0, cur=0, mx=0, my=0, rx=0, ry=0, xray=false, idx=0, snapT;
+  var flatMQ=window.matchMedia('(max-width: 820px), (prefers-reduced-motion: reduce)');
+  function setFlat(){ root.classList.toggle('flat', flatMQ.matches); } setFlat(); (flatMQ.addEventListener||flatMQ.addListener).call(flatMQ,'change',setFlat);
+  var isFlat=function(){ return root.classList.contains('flat'); };
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  var hud=document.getElementById('hud');
+  hud.innerHTML='<div class="h">&gt; layershot list</div>'+names.map(function(n,i){return '<button data-i="'+i+'"></button>';}).join('');
+  var hb=[].slice.call(hud.querySelectorAll('button'));
+  function pad(i){ return (i<10?'0':'')+i; }
+  function paint(){
+    hb.forEach(function(b,i){ b.className=i===idx?'on':''; b.textContent=pad(i)+' '+(i===idx?'FG ':(i<idx?'MIN':'   '))+' '+names[i]; });
+    panels.forEach(function(p,i){ p.classList.toggle('fg',i===idx); p.classList.toggle('behind',i!==idx); p.querySelector('.n').textContent=pad(i); p.querySelector('.t').textContent=names[i]+'.exe'; p.querySelector('.tag').textContent=i===idx?'FG':(i<idx?'minimized':'covered'); });
+    window.__stack.idx=idx;
+  }
+  hud.addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) goTo(+b.dataset.i); });
+  function goTo(i){ target=clamp(i,0,N-1); } window.__goTo=goTo;
+  document.addEventListener('click',function(e){ var g=e.target.closest('[data-go]'); if(g){ var i=names.indexOf(g.dataset.go); if(i>=0) goTo(i); } });
+  window.addEventListener('wheel',function(e){
+    if(isFlat()) return; if(e.target.closest&&e.target.closest('#chat')) return;
+    var body=e.target.closest&&e.target.closest('.panel.fg .body');
+    if(body&&body.scrollHeight>body.clientHeight+4){ var top=body.scrollTop<=0, bot=body.scrollTop+body.clientHeight>=body.scrollHeight-2; if((e.deltaY<0&&!top)||(e.deltaY>0&&!bot)) return; }
+    e.preventDefault(); target=clamp(target+e.deltaY*0.0016,0,N-1); clearTimeout(snapT); snapT=setTimeout(function(){ target=Math.round(target); },140);
+  },{passive:false});
+  var ty=null; window.addEventListener('touchstart',function(e){ if(e.target.closest&&e.target.closest('#chat')){ ty=null; return; } ty=e.touches[0].clientY; },{passive:true});
+  window.addEventListener('touchmove',function(e){ if(isFlat()||ty===null) return; var y=e.touches[0].clientY; target=clamp(target+(ty-y)*0.004,0,N-1); ty=y; },{passive:true});
+  window.addEventListener('touchend',function(){ ty=null; target=Math.round(target); });
+  var inp=document.getElementById('in'), out=document.getElementById('out');
+  window.addEventListener('keydown',function(e){
+    if(/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){ if(e.key==='Escape'){ document.activeElement.blur(); } return; }
+    if(e.key==='Escape'){ document.getElementById('lb').classList.remove('open'); }
+    if(isFlat()) return;
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); goTo(Math.round(target)+1); }
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); goTo(Math.round(target)-1); }
+    else if(e.key==='Home'){ goTo(0); } else if(e.key==='End'){ goTo(N-1); }
+    else if(e.key==='x'||e.key==='X'){ toggleX(); } else if(e.key==='/'){ e.preventDefault(); inp.focus(); }
+  });
+  panels.forEach(function(p,i){ p.addEventListener('click',function(){ if(!isFlat()&&i!==idx) goTo(i); }); });
+  document.addEventListener('mousemove',function(e){ var onFg=!!(e.target.closest&&e.target.closest('.panel.fg')); if(onFg){ mx=0; my=0; rx=0; ry=0; } else { mx=(e.clientX/innerWidth-.5)*2; my=(e.clientY/innerHeight-.5)*2; } ringT.x=e.clientX; ringT.y=e.clientY; ring.style.opacity=1; });
+  var xb=document.getElementById('xr');
+  function toggleX(){ xray=!xray; root.classList.toggle('xray',xray); xb.classList.toggle('on',xray); xb.textContent='X-ray: '+(xray?'on':'off'); } xb.addEventListener('click',toggleX);
+  var ring=document.getElementById('ring'), ringT={x:-100,y:-100}, ringP={x:-100,y:-100};
+  document.addEventListener('mouseover',function(e){ ring.classList.toggle('big',!!e.target.closest('a,button,input,.panel.behind,img.zoom')); });
+  // lightbox
+  var lb=document.getElementById('lb'), lbi=lb.querySelector('img');
+  document.addEventListener('click',function(e){ var im=e.target.closest('img.zoom'); if(im){ lbi.src=im.src; lb.classList.add('open'); } else if(e.target.closest('#lb')){ lb.classList.remove('open'); } });
+  // command line, mirrors the layershot CLI, plus a few extras
+  var links={layershot:'https://github.com/Kishore180994/layershot',pypi:'https://pypi.org/project/layershot/',github:'https://github.com/Kishore180994',linkedin:'https://www.linkedin.com/in/ck18/',agentchrome:'https://github.com/Kishore180994/AgentChrome',email:'mailto:kishore.vds60@gmail.com'};
+  function say(s){ out.textContent=s; clearTimeout(say.t); say.t=setTimeout(function(){ out.textContent=''; },9000); }
+  function openLink(u){ var a=document.createElement('a'); a.href=u; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
+  var EGG={
+    whoami:'kishore  |  Bay Area  |  builds things in layers',
+    printer:'Bambu Lab P1S  |  0.4 mm nozzle  |  0.20 mm layers  |  SUNLU PLA Matte + custom PETG',
+    igris:'Igris: printed black, painted by hand from a six-colour reference. Still in progress.\nArise.',
+    sudo:'Nice try. This site has no tools, no keys and no sudo.',
+    'cat resume.txt':'Senior AI engineer. 8 yrs on Google Android/ChromeOS teams. Agents, MCP, LLM evals.\nkishore.vds60@gmail.com',
+    'ls prints':'arena/  catan-board/  desk-mounts/  dongle-sled/  masala-box/  p1-screen-cover/\nmonitor-magsafe-mount/  revolver-sprayer-v6/  pika-fan-screws/  igris/',
+    'git log':'2026  layershot, Jarvis, HoloView, local models\n2025  AgentChrome (LangGraph browser agent)\n2024  BugLens, GenDex, AI game forge\n2023  CloudGamingFPS, extension tooling\n2022  Moovy, React Native, fps-counter\n2020  PWA experiments\n2019  hackathons, compiler, drone + VR\n2018  Angular portfolio'
+  };
+  inp.addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return; var s=inp.value.trim(); inp.value=''; if(!s) return;
+    var low=s.toLowerCase(), p=s.split(/\s+/), c=p[0].toLowerCase(), a=p.slice(1).join(' ').toLowerCase();
+    if(EGG[low]) say(EGG[low]);
+    else if(c==='help') say('list | shot <n|name> | open <layershot|pypi|github|linkedin|email> | xray | clear\nalso: whoami, printer, ls prints, git log, cat resume.txt, igris');
+    else if(c==='list') say(names.map(function(n,i){ return pad(i)+(i===idx?' FG  ':(i<idx?' MIN ':'     '))+n; }).join('\n'));
+    else if(c==='shot'||c==='go'){ var i=/^\d+$/.test(a)?+a:names.findIndex(function(n){return n.indexOf(a)===0;}); if(i>=0&&i<N){ goTo(i); say('saved '+names[i]+'.png  layer '+i); } else say('no such layer: '+a); }
+    else if(c==='open'){ if(links[a]){ openLink(links[a]); say('opened '+a); } else say('open <'+Object.keys(links).join('|')+'>'); }
+    else if(c==='xray'){ toggleX(); say('x-ray '+(xray?'on':'off')); } else if(c==='clear'){ out.textContent=''; }
+    else say('unknown command: '+c+'  (try help)');
+    inp.blur();
+  });
+  // frame loop
+  function frame(){
+    cur+=(target-cur)*0.08; if(Math.abs(target-cur)<0.0004) cur=target;
+    var ni=Math.round(target); if(ni!==idx||!paint.done){ idx=ni; paint(); paint.done=true; }
+    rx+=(mx*4-rx)*0.05; ry+=(-my*3-ry)*0.05;
+    ringP.x+=(ringT.x-ringP.x)*0.2; ringP.y+=(ringT.y-ringP.y)*0.2; ring.style.transform='translate('+ringP.x+'px,'+ringP.y+'px)';
+    window.__stack.cur=cur; window.__stack.mx=mx; window.__stack.my=my;
+    if(!isFlat()){
+      world.style.transform='rotateX('+ry+'deg) rotateY('+rx+'deg)';
+      panels.forEach(function(p,i){
+        var d=i-cur, off=Math.min(Math.max(d,0),3)/3, sgn=(i%2?1:-1);
+        var x=sgn*130*off, y=((i%3)-1)*46*off, r=-sgn*7*off;
+        p.style.transform='translate(-50%,-50%) translate3d('+x+'px,'+y+'px,'+((cur-i)*GAP)+'px) rotateY('+r+'deg)';
+        var op, blur=0; if(d<0){ op=clamp(1+d/0.7,0,1); } else { op=clamp(1-d*0.5,0,1); blur=Math.min(d,3)*1.3; }
+        if(xray){ op=Math.max(op, d<0?op:clamp(.7-d*.12,0,1)); blur=0; }
+        p.style.opacity=op; p.style.filter=blur>0.05?'blur('+blur.toFixed(2)+'px)':'none';
+        p.style.display=(op<0.01)?'none':''; p.style.visibility='visible'; p.style.pointerEvents=(Math.abs(d)<0.5)?'auto':'none';
+      });
+    } else { panels.forEach(function(p){ p.style.display=''; p.style.visibility=''; p.style.pointerEvents=''; }); }
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  // Latency charts, numbers from my own benchmark
+  (function(){
+    function chart(el,title,rows,max){ el.innerHTML='<div class="eyebrow" style="margin-bottom:2px">'+title+'</div>'+rows.map(function(r){ return '<div class="l"><span>'+r[0]+'</span><div class="tr"><div class="fl'+(r[3]?' o':'')+'" style="width:'+Math.max(2,r[1]/max*100)+'%"></div></div><b>'+r[2]+'</b></div>'; }).join(''); }
+    chart(document.getElementById('lat1'),'Speech to text (lower is faster)',[['Whisper small.en, GPU',79,'79 ms',0],['Whisper large-v3-turbo, GPU',161,'161 ms',0],['Hosted API (Groq turbo)',403,'403 ms',1],['Whisper small.en, CPU',1077,'1,077 ms',0]],1077);
+    chart(document.getElementById('hb1'),'Levels 1 to 3, mean score (of 100)',[['Claude Opus',98.9,'98.9',0],['Claude Sonnet',97.2,'97.2',0],['Claude Haiku',92.9,'92.9',1]],100);
+    chart(document.getElementById('hb2'),'Level 4: gears and threads (of 100)',[['Claude Opus',97.1,'97.1',0],['Claude Sonnet',94.8,'94.8',0],['Claude Haiku',65.7,'65.7',1]],100);
+    chart(document.getElementById('lat2'),'Text to speech, whole reply',[['Kokoro, GPU',74,'74 ms',0],['edge-tts (cloud)',1400,'1,400 ms',1]],1400);
+    fetch('assets/voice.mp3',{method:'HEAD'}).then(function(r){ if(r.ok) document.getElementById('voicebox').style.display='block'; }).catch(function(){});
+  })();
+})();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+(async function(){
+  try{
+    var S=window.__stack, PARTS=window.PARTS, LAYER=0.2, loader=new STLLoader();
+    function b64buf(s){ var bin=atob(s), n=bin.length, u=new Uint8Array(n); for(var i=0;i<n;i++) u[i]=bin.charCodeAt(i); return u.buffer; }
+    function prep(g){ g.rotateX(-Math.PI/2); g.computeBoundingBox(); var b=g.boundingBox; g.translate(-(b.min.x+b.max.x)/2,-b.min.y,-(b.min.z+b.max.z)/2); g.computeVertexNormals(); g.computeBoundingBox(); return g; }
+    var pj=await (await fetch('assets/parts.json')).json();
+    var geoms=PARTS.map(function(p){ var g=prep(loader.parse(b64buf(pj[p.key]))); if(pj[p.key+'_c']){ var cb=new Uint8Array(b64buf(pj[p.key+'_c'])), n=g.attributes.position.count, col=new Float32Array(n*3); for(var t=0;t<n;t++){ var k=Math.floor(t/3)*3; col[t*3]=Math.pow(cb[k]/255,2.2); col[t*3+1]=Math.pow(cb[k+1]/255,2.2); col[t*3+2]=Math.pow(cb[k+2]/255,2.2); } g.setAttribute('color',new THREE.BufferAttribute(col,3)); } return g; });
+    var blue=0x3a66e0, orange=0xff5a1f;
+    // ---- part viewer with a layer slider ----
+    var vc=document.getElementById('vcanvas'), wrap=document.getElementById('vwrap');
+    var vr=new THREE.WebGLRenderer({canvas:vc,antialias:true,alpha:true}); vr.localClippingEnabled=true; vr.setPixelRatio(Math.min(devicePixelRatio,2));
+    var vs=new THREE.Scene(), vcam=new THREE.PerspectiveCamera(38,1,.1,3000);
+    vs.add(new THREE.HemisphereLight(0xffffff,0x3b3d48,1.0)); var dl=new THREE.DirectionalLight(0xffffff,1.6); dl.position.set(1,2,1.4); vs.add(dl);
+    var plane=new THREE.Plane(new THREE.Vector3(0,-1,0),1e6);
+    var vmat=new THREE.MeshStandardMaterial({color:0x3a66e0,roughness:.5,metalness:.05,side:THREE.DoubleSide,clippingPlanes:[plane]});
+    var cmat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.6,metalness:.05,side:THREE.DoubleSide,clippingPlanes:[plane]}); var vgrid=new THREE.GridHelper(1,20,0x3a3d4a,0x262833); vs.add(vgrid);
+    var ring=new THREE.Mesh(new THREE.RingGeometry(.48,.52,96).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:orange,side:THREE.DoubleSide}));
+    vs.add(ring); var mesh=null, dims=null, cur=0;
+    var controls=new OrbitControls(vcam,vc); controls.enableZoom=false; controls.enablePan=false; controls.autoRotate=true; controls.autoRotateSpeed=0.7; controls.enableDamping=true;
+    var tabs=document.getElementById('vtabs'), rng=document.getElementById('vrange'), linfo=document.getElementById('vlayer'), sinfo=document.getElementById('vsize'), story=document.getElementById('vstory');
+    PARTS.forEach(function(p,i){ var b=document.createElement('button'); b.type='button'; b.textContent=p.name; b.addEventListener('click',function(){ show(i); }); tabs.appendChild(b); });
+    function setLayer(){ var t=rng.value/1000, y=t*dims.h; plane.constant=y+0.0001; ring.position.y=y; ring.visible=t<0.999; var total=Math.ceil(dims.h/LAYER), n=Math.max(1,Math.ceil(y/LAYER)); linfo.textContent=PARTS[cur].asm ? ('cut at '+y.toFixed(0)+' mm of '+dims.h.toFixed(0)+' mm  ·  assembled model') : ('layer '+(t===0?0:n)+' of '+total+'  ·  0.20 mm'); }
+    function show(i){ cur=i; if(mesh) vs.remove(mesh); var g=geoms[i]; mesh=new THREE.Mesh(g,g.attributes.color?cmat:vmat); vs.add(mesh); var b=g.boundingBox; dims={w:b.max.x-b.min.x,d:b.max.z-b.min.z,h:b.max.y}; var R=Math.max(dims.w,dims.d,dims.h);
+      ring.scale.setScalar(Math.max(dims.w,dims.d)*0.62*2); var cy=dims.h*0.4; vcam.position.set(R*0.95,R*0.7+cy,R*1.1); controls.target.set(0,cy,0); vcam.near=R/100; vcam.far=R*30; vcam.updateProjectionMatrix(); vgrid.scale.setScalar(R*2.4); controls.update();
+      sinfo.textContent=dims.w.toFixed(1)+' x '+dims.d.toFixed(1)+' x '+dims.h.toFixed(1)+' mm'; story.textContent=PARTS[i].story;
+      [].forEach.call(tabs.children,function(c,k){ c.classList.toggle('on',k===i); }); rng.value=1000; setLayer(); }
+    rng.addEventListener('input',function(){ controls.autoRotate=false; setLayer(); }); show(0);
+    function fit(){ var w=wrap.clientWidth, h=wrap.clientHeight; if(vc.width!==Math.floor(w*vr.getPixelRatio())||vc.height!==Math.floor(h*vr.getPixelRatio())){ vr.setSize(w,h,false); vcam.aspect=w/h; vcam.updateProjectionMatrix(); } }
+    // ---- background: one of my parts, printed as you scroll ----
+    var bg=document.getElementById('bg'), br=new THREE.WebGLRenderer({canvas:bg,antialias:true,alpha:true}); br.localClippingEnabled=true; br.setPixelRatio(Math.min(devicePixelRatio,2));
+    var bs=new THREE.Scene(), bcam=new THREE.PerspectiveCamera(34,1,.1,3000);
+    function bsize(){ br.setSize(innerWidth,innerHeight,false); bcam.aspect=innerWidth/innerHeight; bcam.updateProjectionMatrix(); } bsize(); addEventListener('resize',bsize);
+    bs.add(new THREE.HemisphereLight(0xffffff,0x2a2c35,0.95)); var d2=new THREE.DirectionalLight(0xffffff,1.7); d2.position.set(20,40,25); bs.add(d2);
+    var grid=new THREE.GridHelper(160,40,0xece7da,0xece7da); grid.material.transparent=true; grid.material.opacity=.09; bs.add(grid);
+    var g0=geoms[1], b0=g0.boundingBox, w0=Math.max(b0.max.x-b0.min.x,b0.max.z-b0.min.z), sc=21/w0, H=b0.max.y*sc;
+    var plane2=new THREE.Plane(new THREE.Vector3(0,-1,0),0);
+    var bm=new THREE.MeshStandardMaterial({color:blue,roughness:.55,metalness:.05,side:THREE.DoubleSide,clippingPlanes:[plane2]});
+    var obj=new THREE.Mesh(g0,bm); obj.scale.setScalar(sc); obj.position.set(31,0,-4); bs.add(obj);
+    var nozzle=new THREE.Mesh(new THREE.ConeGeometry(.9,2.4,20).rotateX(Math.PI),new THREE.MeshBasicMaterial({color:orange})); bs.add(nozzle);
+    var HOB=[].indexOf.call(document.querySelectorAll('.panel'),document.querySelector('.panel[data-name="hobbies"]'));
+    var t0=performance.now();
+    (function loop(){
+      var t=(performance.now()-t0)/1000;
+      if(!document.documentElement.classList.contains('flat')){
+        var p=S.N>1?S.cur/(S.N-1):0; var y=Math.max(0.01,p*H*1.02); plane2.constant=y;
+        obj.rotation.y=t*0.14+S.cur*0.5;
+        bcam.position.set((S.mx||0)*3,20+(S.my||0)*-2,66); bcam.lookAt(6,H*0.4,0);
+        var r=w0*sc*0.42; nozzle.position.set(31+Math.cos(t*3)*r,y+1.4,-4+Math.sin(t*3)*r); nozzle.visible=p<0.995;
+        br.render(bs,bcam);
+      }
+      if(document.documentElement.classList.contains('flat')||S.idx===HOB){ fit(); controls.update(); vr.render(vs,vcam); }
+      requestAnimationFrame(loop);
+    })();
+  }catch(e){ var c=document.getElementById('bg'); if(c) c.style.display='none'; var w=document.getElementById('vwrap'); if(w) w.innerHTML='<p style="padding:18px" class="muted">The 3D viewer needs WebGL. The parts are real STL files from my printer.</p>'; }
+})();
+</script>
+
+<script>
+(function(){
+  var CHAT_URL = window.CHAT_URL || '/api/chat';
+  var FAQ = [
+    ["What does Kishore do at Google?"],
+    ["Tell me about layershot"],
+    ["What is his 3D printing story?"],
+    ["What languages does he write?"],
+    ["What is his System One experience?"],
+    ["Is he working on robotics?"],
+    ["What went wrong and what did he learn?"],
+    ["What is HoloBench?"],
+    ["What does his day look like?"],
+    ["How did he get better over the years?"],
+    ["What roles is he looking for?"],
+    ["How can I contact him?"]
+  ];
+  var $=function(id){return document.getElementById(id);};
+  var btn=$('chatbtn'), box=$('chat'), msgs=$('msgs'), chips=$('chips'), form=$('cf'), input=$('ci'), send=$('cs'), busy=false, last=0;
+  function add(cls,text){ var d=document.createElement('div'); d.className='m '+cls; d.textContent=text; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; return d; }
+  function open(v){ box.classList.toggle('open',v); btn.setAttribute('aria-expanded',v); btn.textContent=v?'Close chat':'Ask about Kishore'; if(v){ if(!msgs.children.length){ add('b',"Hi, I'm the assistant on Kishore's site. Ask me about his work, projects, hobbies or daily life. I only answer questions about him."); } input.focus(); } }
+  btn.addEventListener('click',function(){ open(!box.classList.contains('open')); }); $('cx').addEventListener('click',function(){ open(false); });
+  FAQ.forEach(function(f){ var b=document.createElement('button'); b.type='button'; b.textContent=f[0]; b.addEventListener('click',function(){ ask(f[0]); }); chips.appendChild(b); });
+  function faqFor(q){ q=q.trim().toLowerCase().replace(/[?.!]+$/,''); for(var i=0;i<FAQ.length;i++){ if(FAQ[i][0].toLowerCase().replace(/[?.!]+$/,'')===q) return FAQ[i][1]; } return null; }
+  function setBusy(v){ busy=v; send.disabled=v; input.disabled=v; if(!v) input.focus(); }
+  async function ask(q){
+    q=(q||'').trim(); if(!q||busy) return; if(Date.now()-last<1500) return; last=Date.now();
+    add('u',q); input.value='';
+    setBusy(true); var wait=add('b','...');
+    try{ var r=await fetch(CHAT_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({q:q.slice(0,280)})}); var d=await r.json(); wait.textContent=(d&&typeof d.answer==='string')?d.answer:'Something went wrong. Please try a suggestion below.'; }
+    catch(e){ wait.textContent="The live assistant is not connected in this preview yet. Every answer here comes from the model, so there are no canned replies to fall back on."; }
+    setBusy(false);
+  }
+  form.addEventListener('submit',function(e){ e.preventDefault(); ask(input.value); });
+})();
+</script>
+<noscript><style>html,body{overflow:auto;height:auto}#stage{position:static;perspective:none}#world{position:static;width:auto;height:auto;padding:16px}.panel{position:relative;left:0;top:0;width:auto;max-height:none;margin:0 0 16px}.panel .body{max-height:none}#hud,#cmdwrap,#xr,#ring,canvas#bg{display:none}</style></noscript>
+</body>
 </html>
