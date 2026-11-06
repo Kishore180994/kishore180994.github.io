@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0d0e12">
 <title>Kishore Danduri | Full-stack AI developer</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://kishore-portfolio-chat.vercel.app">
 <meta name="description" content="Kishore Danduri: evaluates LLMs on real Android builds at Google, builds agents and MCP tools, prints his own parts. A portfolio that prints as you scroll.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -53,7 +55,7 @@
   .hl { background:rgba(255,90,31,.15); color:#ffe2d4; font-weight:600; padding:1px 5px; border-radius:3px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
   html.flat .sk .lg, .sk .lg.narrow { grid-template-columns:1fr; }
   .tabs { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 10px; } .tabs button { font:500 12px 'JetBrains Mono', monospace; padding:5px 10px; border:1px solid var(--bd); border-radius:4px; background:transparent; color:var(--ink); cursor:pointer; } .tabs button.on { background:var(--ink); color:var(--paper); }
-  #vwrap { position:relative; border:1px solid var(--bd); border-radius:5px; background:linear-gradient(#1b1c22,#101115); height:400px; overflow:hidden; } #vcanvas { width:100%; height:100%; display:block; cursor:grab; }
+  #vwrap { position:relative; border:1px solid var(--bd); border-radius:5px; background:linear-gradient(#1b1c22,#101115); height:400px; overflow:hidden; } #vcanvas { width:100%; height:100%; display:block; cursor:grab; touch-action:pan-y; }
   #vinfo { font:500 12px 'JetBrains Mono', monospace; color:var(--ink); margin:8px 0 2px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
   input[type=range] { width:100%; accent-color:var(--orange); }
   /* lab */
@@ -133,7 +135,7 @@
   9 MIN  Obsidian.exe          Graph view
 <span class="d">&gt;</span> <span class="g">layershot shot 4 -o holoview.png</span>
 saved holoview.png  1920x1032  layer 4</pre>
-  <figure><img class="zoom" src="assets/holoview.jpg" alt="HoloView, captured while minimized"><figcaption>That image is the result. HoloView was minimized behind my browser when layershot captured it. I blacked out the printer's network address and a folder path.</figcaption></figure>
+  <figure><img class="zoom" src="assets/holoview.jpg" loading="lazy" decoding="async" alt="HoloView, captured while minimized"><figcaption>That image is the result. HoloView was minimized behind my browser when layershot captured it. I blacked out the printer's network address and a folder path.</figcaption></figure>
   <div class="tags"><span>Python</span><span>MCP server</span><span>CLI + SDK</span><span>UI Automation</span><span>MIT</span></div>
   <div class="btns"><a class="main" href="https://github.com/Kishore180994/layershot">Source</a><a href="https://pypi.org/project/layershot/">pip install layershot</a></div>
 </div></section>
@@ -165,7 +167,7 @@ saved holoview.png  1920x1032  layer 4</pre>
   <p>HoloBench is a test I built to check whether AI models can design 3D parts that are correct and printable. It has 19 tasks in four levels, from a simple plate up to meshing gears and a threaded rod. Each task has a correct reference answer, and some tasks are kept hidden so a model cannot be tuned to them. Every model gets the same instructions, the same three tools, 15 tool calls and 10 minutes. Scores are out of 100: 55 for correct dimensions, 25 for correct shape, 10 for printability and 10 for efficiency. A plain box scores about 33. The reference answer scores about 98.</p>
   <div class="lat" id="hb1"></div><div class="lat" id="hb2"></div>
   <p>The weakest model, Haiku, fused two gears into one solid and faked a thread by stacking rings. My checks caught both.</p>
-  <figure><img class="zoom" src="assets/holobench.png" alt="HoloBench results table inside HoloView: seven models by eleven public tasks"><figcaption>The real results screen in my HoloView app. Each row is a model, each column is a task, and green means a high score. The starred rows (Kimi, GLM, Grok) were run through their own command-line tools without pictures, so they are not exactly the same test as the Claude rows. The red 0 is GLM on the spur gear: its run stopped after three tool calls without submitting anything, so it scored zero.</figcaption></figure>
+  <figure><img class="zoom" src="assets/holobench.jpg" loading="lazy" decoding="async" alt="HoloBench results table inside HoloView: seven models by eleven public tasks"><figcaption>The real results screen in my HoloView app. Each row is a model, each column is a task, and green means a high score. The starred rows (Kimi, GLM, Grok) were run through their own command-line tools without pictures, so they are not exactly the same test as the Claude rows. The red 0 is GLM on the spur gear: its run stopped after three tool calls without submitting anything, so it scored zero.</figcaption></figure>
   <p class="muted">The Claude models were tested on Oct 5, 2026. Kimi, GLM and Grok were tested on Nov 5 through their own command-line tools, on the 11 public tasks only. Almost every model scores close to perfect on the easy levels (1 and 2), so the difference shows up on levels 3 and 4. On level 4, Claude Opus scored 95, Kimi 78 and Grok 47. GPT could not be tested because its tool hit a usage limit, and GLM and Grok have some level 4 results missing. Next I want to try open-ended design briefs. The code is private.</p>
   <div class="tags"><span>Python</span><span>CadQuery</span><span>manifold3d</span><span>OpenSCAD</span><span>MCP</span></div>
 </div></section>
@@ -196,7 +198,7 @@ saved holoview.png  1920x1032  layer 4</pre>
   <input id="vrange" type="range" min="0" max="1000" value="1000" aria-label="Print progress">
   <p id="vstory" style="margin-top:10px"></p>
   <p class="muted">Drag to rotate. The slider cuts through the assembled model.</p>
-  <figure style="max-width:420px"><img class="zoom" src="assets/printer_cam.jpg" alt="P1S chamber camera frame mid-print"><figcaption>A frame from the printer's chamber camera mid-print. The toothed part is the spray dial of a garden-hose sprayer I am designing.</figcaption></figure>
+  <figure style="max-width:420px"><img class="zoom" src="assets/printer_cam.jpg" loading="lazy" decoding="async" alt="P1S chamber camera frame mid-print"><figcaption>A frame from the printer's chamber camera mid-print. The toothed part is the spray dial of a garden-hose sprayer I am designing.</figcaption></figure>
   <p>I also wrote my own desktop app for the hobby, HoloView, because I was tired of switching between viewers and the slicer. It browses my 3,800+ model files, measures parts (distance, wall thickness, hole diameter, overhangs, section cuts) and sends a plate to Bambu Studio. It is a tool for my own use, not something I sell.</p>
   <div class="tags"><span>Bambu Lab P1S</span><span>PLA and PETG</span><span>Fit and clearance</span><span>HoloView (my own viewer)</span></div>
 </div></section>
@@ -205,7 +207,7 @@ saved holoview.png  1920x1032  layer 4</pre>
   <div class="eyebrow">Real &middot; my workshop app</div><h2>HoloView: view, measure, design and print, with agents inside</h2>
   <p>HoloView is the desktop app I built for my 3D printing hobby. It is made with Electron, React and TypeScript on top of a small Python server, and three.js draws the 3D view. Everything runs on my own PC.</p>
   <div class="stats"><div><b>3,832</b><span>model files indexed</span></div><div><b>11</b><span>measurement tools</span></div><div><b>5</b><span>agents with their own tools</span></div></div>
-  <figure style="max-width:100%"><video controls muted loop playsinline preload="metadata" poster="" style="width:100%;border:1px solid var(--bd);border-radius:5px;background:#0b0d12" src="assets/holoview_demo.mp4"></video><figcaption>A real recording of HoloView, not a mockup: a Beyblade (Dranzer Spiral, 11 parts). It pulls the parts apart, snaps them back together, then runs the fit check, which finds 23 contact points between parts, and pulls them apart again. I clicked the buttons through the app&rsquo;s own window while capturing it.</figcaption></figure>
+  <figure style="max-width:100%"><video controls muted loop playsinline preload="none" poster="" style="width:100%;border:1px solid var(--bd);border-radius:5px;background:#0b0d12" src="assets/holoview_demo.mp4"></video><figcaption>A real recording of HoloView, not a mockup: a Beyblade (Dranzer Spiral, 11 parts). It pulls the parts apart, snaps them back together, then runs the fit check, which finds 23 contact points between parts, and pulls them apart again. I clicked the buttons through the app&rsquo;s own window while capturing it.</figcaption></figure>
   <h3 style="margin:14px 0 4px">What it does</h3>
   <p><b>Look and measure.</b> Opens Bambu projects, STL and OBJ files, including 400 MB ones. Measurement tools: point probe, distance, path length, angle, hole diameter, wall thickness, bounding box, section cut with cross-section area, and an overhang map that colours steep faces and gives a support verdict. It warns when a part exceeds the P1S&rsquo;s 256 mm bed.</p>
   <p><b>Assemble and animate.</b> Puts parts together with joints, checks clashes live, plays an animation (a drawer sliding out, a lid opening) and records it as a video.</p>
@@ -216,7 +218,7 @@ saved holoview.png  1920x1032  layer 4</pre>
   <p>One rule I added after a failure: a part is not finished until a print-ready check passes. Spark once saved meshes as loose triangles that Bambu Studio flagged as open edges. Now the mesh is welded exactly and checked for openings and floating geometry before any sign-off.</p>
   <h3 style="margin:14px 0 4px">Controlled by my local Jarvis</h3>
   <p>Jarvis is the voice assistant I run locally. I say &ldquo;add a handle to the drawer&rdquo; or &ldquo;print plate two&rdquo;. Jarvis passes the request to Hermes, an agent runtime on my PC, which starts the right agent through an MCP server (a standard way for AI programs to use tools). The agent works inside HoloView, and I watch it happen on screen. Anything irreversible, like starting a print or deleting a file, pops a confirm dialog in Jarvis first.</p>
-  <figure><img class="zoom" src="assets/holoview.jpg" alt="HoloView window"><figcaption>HoloView with the Beyblade open: its parts listed beside the model, measurements and clash warnings on the right, the printer panel below. I covered my folder names and the printer&rsquo;s ID.</figcaption></figure>
+  <figure><img class="zoom" src="assets/holoview.jpg" loading="lazy" decoding="async" alt="HoloView window"><figcaption>HoloView with the Beyblade open: its parts listed beside the model, measurements and clash warnings on the right, the printer panel below. I covered my folder names and the printer&rsquo;s ID.</figcaption></figure>
   
   <div class="tags"><span>Electron</span><span>React</span><span>TypeScript</span><span>Three.js</span><span>Claude Code agents</span><span>MCP</span><span>Hermes</span><span>Bambu Studio</span></div>
 </div></section>
@@ -281,7 +283,7 @@ window.__stack = { cur:0, idx:0, N:13 };
   var panels=[].slice.call(document.querySelectorAll('.panel')), N=panels.length, names=panels.map(function(p){return p.dataset.name;});
   window.__stack.N=N;
   var world=document.getElementById('world'), root=document.documentElement;
-  var GAP=560, target=0, cur=0, mx=0, my=0, rx=0, ry=0, xray=false, idx=0, snapT;
+  var lastSig='', GAP=560, target=0, cur=0, mx=0, my=0, rx=0, ry=0, xray=false, idx=0, snapT;
   var flatMQ=window.matchMedia('(max-width: 820px), (prefers-reduced-motion: reduce)');
   function setFlat(){ root.classList.toggle('flat', flatMQ.matches); } setFlat(); (flatMQ.addEventListener||flatMQ.addListener).call(flatMQ,'change',setFlat);
   var isFlat=function(){ return root.classList.contains('flat'); };
@@ -355,9 +357,10 @@ window.__stack = { cur:0, idx:0, N:13 };
   function frame(){
     cur+=(target-cur)*0.08; if(Math.abs(target-cur)<0.0004) cur=target;
     var ni=Math.round(target); if(ni!==idx||!paint.done){ idx=ni; paint(); paint.done=true; }
-    rx+=(mx*4-rx)*0.05; ry+=(-my*3-ry)*0.05;
+    rx+=(mx*4-rx)*0.05; ry+=(-my*3-ry)*0.05; if(Math.abs(mx*4-rx)<0.002) rx=mx*4; if(Math.abs(-my*3-ry)<0.002) ry=-my*3;
     ringP.x+=(ringT.x-ringP.x)*0.2; ringP.y+=(ringT.y-ringP.y)*0.2; ring.style.transform='translate('+ringP.x+'px,'+ringP.y+'px)';
     window.__stack.cur=cur; window.__stack.mx=mx; window.__stack.my=my;
+    var sig=cur+'|'+rx+'|'+ry+'|'+xray+'|'+isFlat(); if(sig===lastSig){ requestAnimationFrame(frame); return; } lastSig=sig;
     if(!isFlat()){
       world.style.transform='rotateX('+ry+'deg) rotateY('+rx+'deg)';
       panels.forEach(function(p,i){
@@ -393,14 +396,20 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 (async function(){
   try{
     var S=window.__stack, PARTS=window.PARTS, LAYER=0.2, loader=new STLLoader();
+    var root=document.documentElement;
+    var phone=matchMedia('(max-width: 820px)').matches||matchMedia('(pointer: coarse)').matches;
+    var DPR=Math.min(devicePixelRatio||1, phone?1.25:2);
     function b64buf(s){ var bin=atob(s), n=bin.length, u=new Uint8Array(n); for(var i=0;i<n;i++) u[i]=bin.charCodeAt(i); return u.buffer; }
     function prep(g){ g.rotateX(-Math.PI/2); g.computeBoundingBox(); var b=g.boundingBox; g.translate(-(b.min.x+b.max.x)/2,-b.min.y,-(b.min.z+b.max.z)/2); g.computeVertexNormals(); g.computeBoundingBox(); return g; }
-    var pj=await (await fetch('assets/parts.json')).json();
-    var geoms=PARTS.map(function(p){ var g=prep(loader.parse(b64buf(pj[p.key]))); if(pj[p.key+'_c']){ var cb=new Uint8Array(b64buf(pj[p.key+'_c'])), n=g.attributes.position.count, col=new Float32Array(n*3); for(var t=0;t<n;t++){ var k=Math.floor(t/3)*3; col[t*3]=Math.pow(cb[k]/255,2.2); col[t*3+1]=Math.pow(cb[k+1]/255,2.2); col[t*3+2]=Math.pow(cb[k+2]/255,2.2); } g.setAttribute('color',new THREE.BufferAttribute(col,3)); } return g; });
+    // Every model is its own file and is fetched only when it is needed (the background part at start, the others when the hobbies card nears).
+    function geomFrom(d){ var g=prep(loader.parse(b64buf(d.s))); if(d.c){ var cb=new Uint8Array(b64buf(d.c)), n=g.attributes.position.count, col=new Float32Array(n*3); for(var t=0;t<n;t++){ var k=Math.floor(t/3)*3; col[t*3]=Math.pow(cb[k]/255,2.2); col[t*3+1]=Math.pow(cb[k+1]/255,2.2); col[t*3+2]=Math.pow(cb[k+2]/255,2.2); } g.setAttribute('color',new THREE.BufferAttribute(col,3)); } return g; }
+    var cache={};
+    function loadModel(file){ return cache[file]||(cache[file]=fetch('assets/parts/'+file+'.json').then(function(r){ if(!r.ok) throw new Error(file); return r.json(); }).then(geomFrom)); }
     var blue=0x3a66e0, orange=0xff5a1f;
-    // ---- part viewer with a layer slider ----
+
+    // ---- part viewer with a layer slider (built now, filled when the hobbies card is near) ----
     var vc=document.getElementById('vcanvas'), wrap=document.getElementById('vwrap');
-    var vr=new THREE.WebGLRenderer({canvas:vc,antialias:true,alpha:true}); vr.localClippingEnabled=true; vr.setPixelRatio(Math.min(devicePixelRatio,2));
+    var vr=new THREE.WebGLRenderer({canvas:vc,antialias:!phone,alpha:true,powerPreference:'low-power'}); vr.localClippingEnabled=true; vr.setPixelRatio(DPR);
     var vs=new THREE.Scene(), vcam=new THREE.PerspectiveCamera(38,1,.1,3000);
     vs.add(new THREE.HemisphereLight(0xffffff,0x3b3d48,1.0)); var dl=new THREE.DirectionalLight(0xffffff,1.6); dl.position.set(1,2,1.4); vs.add(dl);
     var plane=new THREE.Plane(new THREE.Vector3(0,-1,0),1e6);
@@ -411,39 +420,58 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     var controls=new OrbitControls(vcam,vc); controls.enableZoom=false; controls.enablePan=false; controls.autoRotate=true; controls.autoRotateSpeed=0.7; controls.enableDamping=true;
     var tabs=document.getElementById('vtabs'), rng=document.getElementById('vrange'), linfo=document.getElementById('vlayer'), sinfo=document.getElementById('vsize'), story=document.getElementById('vstory');
     PARTS.forEach(function(p,i){ var b=document.createElement('button'); b.type='button'; b.textContent=p.name; b.addEventListener('click',function(){ show(i); }); tabs.appendChild(b); });
-    function setLayer(){ var t=rng.value/1000, y=t*dims.h; plane.constant=y+0.0001; ring.position.y=y; ring.visible=t<0.999; var total=Math.ceil(dims.h/LAYER), n=Math.max(1,Math.ceil(y/LAYER)); linfo.textContent=PARTS[cur].asm ? ('cut at '+y.toFixed(0)+' mm of '+dims.h.toFixed(0)+' mm  ·  assembled model') : ('layer '+(t===0?0:n)+' of '+total+'  ·  0.20 mm'); }
-    function show(i){ cur=i; if(mesh) vs.remove(mesh); var g=geoms[i]; mesh=new THREE.Mesh(g,g.attributes.color?cmat:vmat); vs.add(mesh); var b=g.boundingBox; dims={w:b.max.x-b.min.x,d:b.max.z-b.min.z,h:b.max.y}; var R=Math.max(dims.w,dims.d,dims.h);
+    function setLayer(){ if(!dims) return; var t=rng.value/1000, y=t*dims.h; plane.constant=y+0.0001; ring.position.y=y; ring.visible=t<0.999; var total=Math.ceil(dims.h/LAYER), n=Math.max(1,Math.ceil(y/LAYER)); linfo.textContent=PARTS[cur].asm ? ('cut at '+y.toFixed(0)+' mm of '+dims.h.toFixed(0)+' mm  ·  assembled model') : ('layer '+(t===0?0:n)+' of '+total+'  ·  0.20 mm'); }
+    async function show(i){
+      cur=i; [].forEach.call(tabs.children,function(c,k){ c.classList.toggle('on',k===i); });
+      story.textContent=PARTS[i].story; linfo.textContent='loading the model...';
+      var g; try{ g=await loadModel(PARTS[i].key); }catch(e){ linfo.textContent='could not load this model'; return; }
+      if(cur!==i) return;                       // another tab was chosen while this one loaded
+      if(mesh) vs.remove(mesh); mesh=new THREE.Mesh(g,g.attributes.color?cmat:vmat); vs.add(mesh); var b=g.boundingBox; dims={w:b.max.x-b.min.x,d:b.max.z-b.min.z,h:b.max.y}; var R=Math.max(dims.w,dims.d,dims.h);
       ring.scale.setScalar(Math.max(dims.w,dims.d)*0.62*2); var cy=dims.h*0.4; vcam.position.set(R*0.95,R*0.7+cy,R*1.1); controls.target.set(0,cy,0); vcam.near=R/100; vcam.far=R*30; vcam.updateProjectionMatrix(); vgrid.scale.setScalar(R*2.4); controls.update();
-      sinfo.textContent=dims.w.toFixed(1)+' x '+dims.d.toFixed(1)+' x '+dims.h.toFixed(1)+' mm'; story.textContent=PARTS[i].story;
-      [].forEach.call(tabs.children,function(c,k){ c.classList.toggle('on',k===i); }); rng.value=1000; setLayer(); }
-    rng.addEventListener('input',function(){ controls.autoRotate=false; setLayer(); }); show(0);
-    function fit(){ var w=wrap.clientWidth, h=wrap.clientHeight; if(vc.width!==Math.floor(w*vr.getPixelRatio())||vc.height!==Math.floor(h*vr.getPixelRatio())){ vr.setSize(w,h,false); vcam.aspect=w/h; vcam.updateProjectionMatrix(); } }
-    // ---- background: one of my parts, printed as you scroll ----
-    var bg=document.getElementById('bg'), br=new THREE.WebGLRenderer({canvas:bg,antialias:true,alpha:true}); br.localClippingEnabled=true; br.setPixelRatio(Math.min(devicePixelRatio,2));
-    var bs=new THREE.Scene(), bcam=new THREE.PerspectiveCamera(34,1,.1,3000);
-    function bsize(){ br.setSize(innerWidth,innerHeight,false); bcam.aspect=innerWidth/innerHeight; bcam.updateProjectionMatrix(); } bsize(); addEventListener('resize',bsize);
-    bs.add(new THREE.HemisphereLight(0xffffff,0x2a2c35,0.95)); var d2=new THREE.DirectionalLight(0xffffff,1.7); d2.position.set(20,40,25); bs.add(d2);
-    var grid=new THREE.GridHelper(160,40,0xece7da,0xece7da); grid.material.transparent=true; grid.material.opacity=.09; bs.add(grid);
-    var g0=geoms[1], b0=g0.boundingBox, w0=Math.max(b0.max.x-b0.min.x,b0.max.z-b0.min.z), sc=21/w0, H=b0.max.y*sc;
-    var plane2=new THREE.Plane(new THREE.Vector3(0,-1,0),0);
-    var bm=new THREE.MeshStandardMaterial({color:blue,roughness:.55,metalness:.05,side:THREE.DoubleSide,clippingPlanes:[plane2]});
-    var obj=new THREE.Mesh(g0,bm); obj.scale.setScalar(sc); obj.position.set(31,0,-4); bs.add(obj);
-    var nozzle=new THREE.Mesh(new THREE.ConeGeometry(.9,2.4,20).rotateX(Math.PI),new THREE.MeshBasicMaterial({color:orange})); bs.add(nozzle);
+      sinfo.textContent=dims.w.toFixed(1)+' x '+dims.d.toFixed(1)+' x '+dims.h.toFixed(1)+' mm'; rng.value=1000; setLayer(); }
+    rng.addEventListener('input',function(){ controls.autoRotate=false; setLayer(); });
+    function fit(){ var w=wrap.clientWidth, h=wrap.clientHeight; if(!w||!h) return; if(vc.width!==Math.floor(w*vr.getPixelRatio())||vc.height!==Math.floor(h*vr.getPixelRatio())){ vr.setSize(w,h,false); vcam.aspect=w/h; vcam.updateProjectionMatrix(); } }
+
+    // ---- background: one of my parts, printed as you scroll (skipped entirely on phones) ----
+    var bs=null, br=null, bcam=null, obj=null, nozzle=null, plane2=null, H=1, w0=1, sc=1;
+    function startBackground(){
+      var bg=document.getElementById('bg'); br=new THREE.WebGLRenderer({canvas:bg,antialias:true,alpha:true,powerPreference:'low-power'}); br.localClippingEnabled=true; br.setPixelRatio(DPR);
+      bs=new THREE.Scene(); bcam=new THREE.PerspectiveCamera(34,1,.1,3000);
+      function bsize(){ br.setSize(innerWidth,innerHeight,false); bcam.aspect=innerWidth/innerHeight; bcam.updateProjectionMatrix(); } bsize(); addEventListener('resize',bsize);
+      bs.add(new THREE.HemisphereLight(0xffffff,0x2a2c35,0.95)); var d2=new THREE.DirectionalLight(0xffffff,1.7); d2.position.set(20,40,25); bs.add(d2);
+      var grid=new THREE.GridHelper(160,40,0xece7da,0xece7da); grid.material.transparent=true; grid.material.opacity=.09; bs.add(grid);
+      plane2=new THREE.Plane(new THREE.Vector3(0,-1,0),0);
+      nozzle=new THREE.Mesh(new THREE.ConeGeometry(.9,2.4,20).rotateX(Math.PI),new THREE.MeshBasicMaterial({color:orange})); nozzle.visible=false; bs.add(nozzle);
+      loadModel('bg').then(function(g0){ var b0=g0.boundingBox; w0=Math.max(b0.max.x-b0.min.x,b0.max.z-b0.min.z); sc=21/w0; H=b0.max.y*sc;
+        var bm=new THREE.MeshStandardMaterial({color:blue,roughness:.55,metalness:.05,side:THREE.DoubleSide,clippingPlanes:[plane2]});
+        obj=new THREE.Mesh(g0,bm); obj.scale.setScalar(sc); obj.position.set(31,0,-4); bs.add(obj); }).catch(function(){});
+    }
+    var flatNow=function(){ return root.classList.contains('flat'); };
+    var started=false, bgStarted=false;
     var HOB=[].indexOf.call(document.querySelectorAll('.panel'),document.querySelector('.panel[data-name="hobbies"]'));
-    var t0=performance.now();
-    (function loop(){
-      var t=(performance.now()-t0)/1000;
-      if(!document.documentElement.classList.contains('flat')){
-        var p=S.N>1?S.cur/(S.N-1):0; var y=Math.max(0.01,p*H*1.02); plane2.constant=y;
-        obj.rotation.y=t*0.14+S.cur*0.5;
-        bcam.position.set((S.mx||0)*3,20+(S.my||0)*-2,66); bcam.lookAt(6,H*0.4,0);
-        var r=w0*sc*0.42; nozzle.position.set(31+Math.cos(t*3)*r,y+1.4,-4+Math.sin(t*3)*r); nozzle.visible=p<0.995;
-        br.render(bs,bcam);
-      }
-      if(document.documentElement.classList.contains('flat')||S.idx===HOB){ fit(); controls.update(); vr.render(vs,vcam); }
+    var hobVisible=false;
+    if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ hobVisible=es[0].isIntersecting; },{rootMargin:'500px 0px'}).observe(wrap); } else { hobVisible=true; }
+    function near(){ return flatNow() ? hobVisible : (S.idx>=HOB-1 && S.idx<=HOB+1); }
+    var t0=performance.now(), lastBg=0;
+    (function loop(now){
       requestAnimationFrame(loop);
-    })();
-  }catch(e){ var c=document.getElementById('bg'); if(c) c.style.display='none'; var w=document.getElementById('vwrap'); if(w) w.innerHTML='<p style="padding:18px" class="muted">The 3D viewer needs WebGL. The parts are real STL files from my printer.</p>'; }
+      if(document.hidden) return;
+      var flat=flatNow();
+      if(!started && near()){ started=true; show(0); }
+      if(!flat){
+        if(!bgStarted){ bgStarted=true; startBackground(); }
+        else if(br && obj && now-lastBg>=(phone?33:16)){            // about 30 fps on touch screens, full rate otherwise
+          lastBg=now; var t=(now-t0)/1000;
+          var p=S.N>1?S.cur/(S.N-1):0; var y=Math.max(0.01,p*H*1.02); plane2.constant=y;
+          obj.rotation.y=t*0.14+S.cur*0.5;
+          bcam.position.set((S.mx||0)*3,20+(S.my||0)*-2,66); bcam.lookAt(6,H*0.4,0);
+          var r=w0*sc*0.42; nozzle.position.set(31+Math.cos(t*3)*r,y+1.4,-4+Math.sin(t*3)*r); nozzle.visible=p<0.995;
+          br.render(bs,bcam);
+        }
+      }
+      if(mesh && (flat ? hobVisible : S.idx===HOB)){ fit(); controls.update(); vr.render(vs,vcam); }   // the viewer only draws while its card is on screen
+    })(performance.now());
+  }catch(e){ var c=document.getElementById('bg'); if(c) c.style.display='none'; var w=document.getElementById('vwrap'); if(w) w.innerHTML='<p style="padding:18px" class="muted">The 3D viewer needs WebGL. The parts are real model files from my printer.</p>'; }
 })();
 </script>
 
