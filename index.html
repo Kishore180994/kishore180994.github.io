@@ -449,7 +449,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 <script>
 (function(){
-  var CHAT_URL = window.CHAT_URL || '/api/chat';
+  var CHAT_URL = window.CHAT_URL || 'https://kishore-portfolio-chat.vercel.app/api/chat';
   var FAQ = [
     ["What does Kishore do at Google?"],
     ["Tell me about layershot"],
@@ -477,7 +477,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     add('u',q); input.value='';
     setBusy(true); var wait=add('b','...');
     try{ var r=await fetch(CHAT_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({q:q.slice(0,280)})}); var d=await r.json(); wait.textContent=(d&&typeof d.answer==='string')?d.answer:'Something went wrong. Please try a suggestion below.'; }
-    catch(e){ wait.textContent="The live assistant is not connected in this preview yet. Every answer here comes from the model, so there are no canned replies to fall back on."; }
+    catch(e){ wait.textContent="The assistant could not be reached right now. Please try again in a minute, or email kishore.vds60@gmail.com."; }
     setBusy(false);
   }
   form.addEventListener('submit',function(e){ e.preventDefault(); ask(input.value); });
