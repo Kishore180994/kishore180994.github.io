@@ -450,12 +450,15 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 <script>
 (function(){
   var CHAT_URL = window.CHAT_URL || 'https://kishore-portfolio-chat.vercel.app/api/chat';
+  window.TURNSTILE_SITEKEY = window.TURNSTILE_SITEKEY || '0x4AAAAAAF1s79A8vJI0zhC1';   // public Cloudflare Turnstile site key (the secret key stays on the server)
   var FAQ = [
     ["What does Kishore do at Google?"],
     ["Tell me about layershot"],
     ["What is his 3D printing story?"],
     ["What languages does he write?"],
     ["What is his System One experience?"],
+    ["How was this website built?"],
+    ["How is the assistant protected from abuse?"],
     ["Is he working on robotics?"],
     ["What went wrong and what did he learn?"],
     ["What is HoloBench?"],
