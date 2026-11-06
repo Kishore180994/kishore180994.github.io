@@ -472,11 +472,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   FAQ.forEach(function(f){ var b=document.createElement('button'); b.type='button'; b.textContent=f[0]; b.addEventListener('click',function(){ ask(f[0]); }); chips.appendChild(b); });
   function faqFor(q){ q=q.trim().toLowerCase().replace(/[?.!]+$/,''); for(var i=0;i<FAQ.length;i++){ if(FAQ[i][0].toLowerCase().replace(/[?.!]+$/,'')===q) return FAQ[i][1]; } return null; }
   function setBusy(v){ busy=v; send.disabled=v; input.disabled=v; if(!v) input.focus(); }
+  // Bot check: only active when window.TURNSTILE_SITEKEY is set (a free Cloudflare Turnstile key). A fresh token is fetched for every question.
+  function getToken(){ var key=window.TURNSTILE_SITEKEY; if(!key) return Promise.resolve(null); return new Promise(function(res,rej){ function go(){ var box=document.getElementById('tsbox'); if(!box){ box=document.createElement('div'); box.id='tsbox'; box.style.display='none'; document.body.appendChild(box); } box.innerHTML=''; try{ window.turnstile.render(box,{sitekey:key,size:'invisible',callback:function(t){ res(t); },'error-callback':function(){ rej(new Error('ts')); }}); }catch(e){ rej(e); } } if(window.turnstile) go(); else { var s=document.createElement('script'); s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; s.async=true; s.onload=go; s.onerror=function(){ rej(new Error('ts')); }; document.head.appendChild(s); } }); }
   async function ask(q){
     q=(q||'').trim(); if(!q||busy) return; if(Date.now()-last<1500) return; last=Date.now();
     add('u',q); input.value='';
     setBusy(true); var wait=add('b','...');
-    try{ var r=await fetch(CHAT_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({q:q.slice(0,280)})}); var d=await r.json(); wait.textContent=(d&&typeof d.answer==='string')?d.answer:'Something went wrong. Please try a suggestion below.'; }
+    try{ var tok=null; try{ tok=await getToken(); }catch(e){ tok=null; } var payload={q:q.slice(0,280)}; if(tok) payload.t=tok; var r=await fetch(CHAT_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}); var d=await r.json(); wait.textContent=(d&&typeof d.answer==='string')?d.answer:'Something went wrong. Please try a suggestion below.'; }
     catch(e){ wait.textContent="The assistant could not be reached right now. Please try again in a minute, or email kishore.vds60@gmail.com."; }
     setBusy(false);
   }
